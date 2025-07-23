@@ -1,0 +1,17 @@
+# This launches the raid setup script at VM startup via a custom systemd service
+# Put this script in /etc/systemd/system/
+# Confirm it's enabled via systemctl status setup-raid.service
+
+[Unit]
+Description=Setup RAID 0 Array on Local SSDs
+After=local-fs.target
+Wants=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/ted_willke/linux-sys-scripts/setup-raid.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
