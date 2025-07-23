@@ -7,13 +7,13 @@ sleep 10
 RAID_DEVICE="/dev/md0"
 MOUNT_POINT="/mnt/raid0"
 
-# Dynamically detect all unmounted ~375G NVMe devices.
-DEVICES=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk '$2=="375G" && $3=="" {print "/dev/" $1}' | sort | xargs)
+# Dynamically detect all unmounted NVMe devices of size EXPECTED_SIZE.
+DEVICES=$(lsblk -d -n -o NAME,SIZE,MOUNTPOINT | awk -v sz="$EXPECTED_SIZE" '$2==sz && $3=="" {print "/dev/" $1}' | sort | xargs)
 
 # Dynamically calculate the number of RAID devices
 NUM_DEVICES=$(echo $DEVICES | wc -w)
 
-echo "Detected $NUM_DEVICES unmounted 375G NVMe devices:"
+echo "Detected $NUM_DEVICES unmounted $EXPECTED_SIZE NVMe devices:"
 echo "$DEVICES"
 
 # Wait for all devices to become available
